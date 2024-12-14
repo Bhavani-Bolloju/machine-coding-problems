@@ -14,3 +14,39 @@ body {
   padding: 100px;
 }
 
+li {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  width: 220px;
+
+  margin-top: 20px;
+}
+
+li div {
+  /* width: fit-content; */
+  border: 1px solid;
+  padding: 5px 15px;
+  margin: 10px 0;
+}
+
+.todo-delete {
+  width: 25px;
+  height: auto;
+}
+
+.todo-delete svg {
+  width: 100%;
+  height: auto;
+}
+
+.todo-check {
+  height: 25px;
+  width: 25px;
+}
+
+.delete {
+  display: none;
+}
