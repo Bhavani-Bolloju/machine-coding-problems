@@ -4,20 +4,14 @@ const btn_add = document.querySelector(".btn-add");
 
 const todo_list = document.querySelector(".todo-list");
 
-// const todo_delete = document.querySelector(".todo-delete");
+let todos: { todo: string; id: number; status: string }[] = [];
 
-// const todo_complete = document.querySelector(".todo-check");
-
-// const todos = [];
-
-const addTodo = function (todo: string) {
+const addTodo = function (todo: string, id: number) {
   const todo_item = `
-        <li class="todo-item">
+        <li class="todo-item" data-id="${id}">
         <input type="checkbox" class="todo-check" />
-          <div>
-            <span contenteditable="true" class="todo-text">
+          <div class="todo-text">
               ${todo}
-            </span>
           </div>
           <button class="todo-delete">
             <svg
@@ -41,22 +35,67 @@ const addTodo = function (todo: string) {
   input_text.value = "";
 };
 
+const addToList = function (todo: string, id: number) {
+  const todoObj = { todo, status: "incomplete", id };
+  todos.push(todoObj);
+};
+
+//adding new todo
 btn_add?.addEventListener("click", function (e) {
   e.preventDefault();
 
   const todo = input_text.value;
   if (todo === "") return;
-  addTodo(todo);
+
+  const id = todos.length + 1;
+
+  //display the item on the screen
+  addTodo(todo, id);
+
+  //add to the todos list
+  addToList(todo, id);
+
+  console.log(todos);
 });
 
+//deleting the todo
 todo_list?.addEventListener("click", function (e) {
   const target = e.target as HTMLElement | null;
 
   const btn = target?.closest(".todo-delete");
 
-  if (!btn) return;
+  const item = target?.closest(".todo-item") as HTMLObjectElement | null;
 
+  if (!btn || !item) return;
+
+  const itemId = item?.dataset?.id;
+
+  //remove item from the dom
   const todo = btn.closest(".todo-item") as HTMLElement;
-
   todo.classList.add("delete");
+
+  //remove item from the list
+  if (!itemId) return;
+  todos = todos.filter((todo) => todo.id !== +itemId);
 });
+
+//marking as complete
+// todo_list?.addEventListener("click", function (e) {
+//   const target = e.target as HTMLElement | null;
+
+//   const btn = target?.closest(".todo-check") as HTMLInputElement;
+
+//   if (!btn) return;
+
+//   const isCompleted = btn.checked;
+
+//   // const todo = btn.closest(".todo-item") as HTMLElement;
+
+//   if (isCompleted) {
+//     //marked as complete
+//     console.log("completed");
+//   } else {
+//     //unchecked
+//     console.log("not completed");
+//   }
+// });
