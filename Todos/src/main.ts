@@ -79,23 +79,36 @@ todo_list?.addEventListener("click", function (e) {
   todos = todos.filter((todo) => todo.id !== +itemId);
 });
 
-//marking as complete
-// todo_list?.addEventListener("click", function (e) {
-//   const target = e.target as HTMLElement | null;
+//marking as complete/incomplete
+todo_list?.addEventListener("click", function (e) {
+  const target = e.target as HTMLElement | null;
 
-//   const btn = target?.closest(".todo-check") as HTMLInputElement;
+  const btn = target?.closest(".todo-check") as HTMLInputElement;
+  const todoEl = target?.closest(".todo-item") as HTMLElement;
 
-//   if (!btn) return;
+  if (!btn || !todoEl) return;
 
-//   const isCompleted = btn.checked;
+  const isCompleted = btn.checked;
 
-//   // const todo = btn.closest(".todo-item") as HTMLElement;
+  const todoId = todoEl.dataset.id;
 
-//   if (isCompleted) {
-//     //marked as complete
-//     console.log("completed");
-//   } else {
-//     //unchecked
-//     console.log("not completed");
-//   }
-// });
+  if (!todoId) return;
+
+  const index = todos.findIndex((todo) => todo.id === +todoId);
+
+  const todo = todos[index];
+
+  if (isCompleted) {
+    //marked as complete
+    const updatedTodo = { ...todo, status: "completed" };
+
+    todos.splice(index, 1, updatedTodo);
+
+    // console.log("completed", updatedTodo);
+  } else {
+    const updatedTodo = { ...todo, status: "incomplete" };
+    //unchecked
+    todos.splice(index, 1, updatedTodo);
+    // console.log("not completed", updatedTodo);
+  }
+});
