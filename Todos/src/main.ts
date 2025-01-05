@@ -1,25 +1,30 @@
 const input_text = document.querySelector(".input-text") as HTMLInputElement;
-
 const btn_add = document.querySelector(".btn-add");
-
 const todo_list = document.querySelector(".todo-list");
 
-const btn_save = document.querySelector(".btn-save");
-const todo_input = document.querySelector(".todo-input");
+interface Todo {
+  text: string;
+  id: number;
+  completed: boolean;
+}
 
-const todo_text = document.querySelector(".todo-text");
+let todos: Todo[] = [];
 
-let todos: { todo: string; id: number; status: string }[] = [];
+//
+const getLocallyStoredTodos = localStorage.getItem("todos");
+todos = getLocallyStoredTodos ? JSON.parse(getLocallyStoredTodos) : [];
 
-const addTodo = function (todo: string, id: number) {
+const renderTodo = function (todo: Todo) {
   const todo_item = `
-        <li class="todo-item" data-id="${id}">
-        <input type="checkbox" class="todo-check" />
+        <li class="todo-item" data-id="${todo.id}">
+        <input type="checkbox" class="todo-check" ${
+          todo.completed && "checked"
+        } />
           <div class="todo-content">
-            <span class="todo-text">${todo}</span>
+            <span class="todo-text">${todo.text}</span>
             <input type="text" class="todo-input remove" />
           </div>
-          <button class="todo-delete">
+          <button class="btn-delete">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               x="0px"
@@ -33,7 +38,7 @@ const addTodo = function (todo: string, id: number) {
               ></path>
             </svg>
           </button>
-          <button class="todo-edit">
+          <button class="btn-edit">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
               </svg>
@@ -45,34 +50,57 @@ const addTodo = function (todo: string, id: number) {
   input_text.value = "";
 };
 
-const addToList = function (todo: string, id: number) {
-  const todoObj = { todo, status: "incomplete", id };
-  todos.push(todoObj);
+const renderStoredTodos = function (todos: Todo[]) {
+  if (todos.length <= 0) return;
+
+  todos.map((todo) => renderTodo(todo));
 };
 
-//adding new todo
+renderStoredTodos(todos);
+
+const addToLocalStorage = function (todos: Todo[]) {
+  const addItems = JSON.stringify(todos);
+
+  console.log(todos);
+
+  localStorage.setItem("todos", addItems);
+};
+
+const addToList = function (todo: Todo) {
+  todos.push(todo);
+
+  //add to the localstorage
+  addToLocalStorage(todos);
+};
+
+//.................adding new todo
 btn_add?.addEventListener("click", function (e) {
   e.preventDefault();
 
-  const todo = input_text.value;
-  if (todo === "") return;
+  const text = input_text.value;
+
+  if (text === "") return;
 
   const id = todos.length + 1;
 
+  const todoObj = {
+    id,
+    text,
+    completed: false
+  };
+
   //display the item on the screen
-  addTodo(todo, id);
+  renderTodo(todoObj);
 
   //add to the todos list
-  addToList(todo, id);
-
-  console.log(todos);
+  addToList(todoObj);
 });
 
-//deleting the todo
+//................deleting the todo
 todo_list?.addEventListener("click", function (e) {
   const target = e.target as HTMLElement | null;
 
-  const btn = target?.closest(".todo-delete");
+  const btn = target?.closest(".btn-delete");
 
   const item = target?.closest(".todo-item") as HTMLObjectElement | null;
 
@@ -87,9 +115,10 @@ todo_list?.addEventListener("click", function (e) {
   //remove item from the list
   if (!itemId) return;
   todos = todos.filter((todo) => todo.id !== +itemId);
+  addToLocalStorage(todos);
 });
 
-//marking as complete/incomplete
+//............marking as complete/incomplete
 todo_list?.addEventListener("click", function (e) {
   const target = e.target as HTMLElement | null;
 
@@ -108,30 +137,21 @@ todo_list?.addEventListener("click", function (e) {
 
   const todo = todos[index];
 
-  if (isCompleted) {
-    //marked as complete
-    const updatedTodo = { ...todo, status: "completed" };
+  const updatedTodo = { ...todo, completed: isCompleted };
 
-    todos.splice(index, 1, updatedTodo);
+  todos.splice(index, 1, updatedTodo);
 
-    // console.log("completed", updatedTodo);
-  } else {
-    const updatedTodo = { ...todo, status: "incomplete" };
-    //unchecked
-    todos.splice(index, 1, updatedTodo);
-    // console.log("not completed", updatedTodo);
-  }
+  addToLocalStorage(todos);
 });
 
-//editing the todo
-
+//.............editing the todo
 todo_list?.addEventListener("click", function (e) {
   const target = e.target as HTMLElement | null;
 
   if (!target) return;
 
-  const editBtn = target?.closest(".todo-edit") as HTMLElement;
   const todoEl = target?.closest(".todo-item") as HTMLElement;
+  const editBtn = target?.closest(".btn-edit") as HTMLElement;
 
   const saveBtn = todoEl.querySelector(".btn-save");
   const todoInput = todoEl.querySelector(".todo-input") as HTMLInputElement;
@@ -150,6 +170,7 @@ todo_list?.addEventListener("click", function (e) {
   todoInput.value = todoText.textContent || "";
 });
 
+//............updating the edited todo
 todo_list?.addEventListener("click", function (e) {
   const target = e.target as HTMLElement | null;
 
@@ -176,7 +197,9 @@ todo_list?.addEventListener("click", function (e) {
   const index = todos.findIndex((todo) => todo.id === +todoId);
 
   const item = todos[index];
-  const updatedTodo = { ...item, todo: todoInput.value };
+  const updatedTodo = { ...item, text: todoInput.value };
+
   todos.splice(index, 1, updatedTodo);
 
+  addToLocalStorage(todos);
 });

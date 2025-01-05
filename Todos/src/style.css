@@ -31,14 +31,14 @@ li div {
   margin: 10px 0;
 }
 
-.todo-delete,
-.todo-edit {
+.btn-delete,
+.btn-edit {
   width: 25px;
-  height: auto;
+  height: 25px;
 }
 
-.todo-delete svg,
-.todo-edit svg {
+.btn-delete svg,
+.btn-edit svg {
   width: 100%;
   height: auto;
 }
@@ -66,8 +66,8 @@ li div {
   display: none;
 }
 
-.todo-delete:hover,
-.todo-edit:hover {
+.btn-delete:hover,
+.btn-edit:hover {
   cursor: pointer;
 }
 
