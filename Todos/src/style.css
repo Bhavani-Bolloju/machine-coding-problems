@@ -20,8 +20,7 @@ li {
   align-items: center;
   gap: 10px;
   position: relative;
-  width: 220px;
-
+  /* width: 220px; */
   margin-top: 20px;
 }
 
@@ -32,12 +31,14 @@ li div {
   margin: 10px 0;
 }
 
-.todo-delete {
+.todo-delete,
+.todo-edit {
   width: 25px;
   height: auto;
 }
 
-.todo-delete svg {
+.todo-delete svg,
+.todo-edit svg {
   width: 100%;
   height: auto;
 }
@@ -47,6 +48,31 @@ li div {
   width: 25px;
 }
 
-.delete {
+.todo-content {
+  min-width: fit-content;
+  width: 300px;
+}
+
+.todo-content span {
+  width: 100%;
+}
+
+.todo-content input {
+  width: 100%;
+  height: 100%;
+}
+
+.remove {
+  display: none;
+}
+
+.todo-delete:hover,
+.todo-edit:hover {
+  cursor: pointer;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
   display: none;
 }

@@ -4,14 +4,20 @@ const btn_add = document.querySelector(".btn-add");
 
 const todo_list = document.querySelector(".todo-list");
 
+const btn_save = document.querySelector(".btn-save");
+const todo_input = document.querySelector(".todo-input");
+
+const todo_text = document.querySelector(".todo-text");
+
 let todos: { todo: string; id: number; status: string }[] = [];
 
 const addTodo = function (todo: string, id: number) {
   const todo_item = `
         <li class="todo-item" data-id="${id}">
         <input type="checkbox" class="todo-check" />
-          <div class="todo-text">
-              ${todo}
+          <div class="todo-content">
+            <span class="todo-text">${todo}</span>
+            <input type="text" class="todo-input remove" />
           </div>
           <button class="todo-delete">
             <svg
@@ -27,9 +33,13 @@ const addTodo = function (todo: string, id: number) {
               ></path>
             </svg>
           </button>
+          <button class="todo-edit">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+              </svg>
+          </button>
+          <button class="btn-save remove">save</button>
         </li>`;
-
-  // console.log(todo, todo_item);
   todo_list?.insertAdjacentHTML("beforeend", todo_item);
 
   input_text.value = "";
@@ -72,7 +82,7 @@ todo_list?.addEventListener("click", function (e) {
 
   //remove item from the dom
   const todo = btn.closest(".todo-item") as HTMLElement;
-  todo.classList.add("delete");
+  todo.classList.add("remove");
 
   //remove item from the list
   if (!itemId) return;
@@ -111,4 +121,62 @@ todo_list?.addEventListener("click", function (e) {
     todos.splice(index, 1, updatedTodo);
     // console.log("not completed", updatedTodo);
   }
+});
+
+//editing the todo
+
+todo_list?.addEventListener("click", function (e) {
+  const target = e.target as HTMLElement | null;
+
+  if (!target) return;
+
+  const editBtn = target?.closest(".todo-edit") as HTMLElement;
+  const todoEl = target?.closest(".todo-item") as HTMLElement;
+
+  const saveBtn = todoEl.querySelector(".btn-save");
+  const todoInput = todoEl.querySelector(".todo-input") as HTMLInputElement;
+
+  const todoText = todoEl.querySelector(".todo-text");
+
+  if (!editBtn) return;
+
+  if (!todoEl || !saveBtn || !todoInput || !todoText) return;
+
+  saveBtn?.classList.remove("remove");
+  editBtn?.classList.add("remove");
+  todoText?.classList.add("remove");
+  todoInput?.classList.remove("remove");
+
+  todoInput.value = todoText.textContent || "";
+});
+
+todo_list?.addEventListener("click", function (e) {
+  const target = e.target as HTMLElement | null;
+
+  const saveBtn = target?.closest(".btn-save") as HTMLElement;
+
+  if (!saveBtn) return;
+
+  const todoItem = target?.closest(".todo-item") as HTMLElement;
+  const todoInput = todoItem.querySelector(".todo-input") as HTMLInputElement;
+  const todoText = todoItem.querySelector(".todo-text") as HTMLElement;
+  const editBtn = todoItem.querySelector(".btn-edit") as HTMLElement;
+
+  todoText.textContent = todoInput.value;
+
+  saveBtn?.classList.add("remove");
+  editBtn?.classList.remove("remove");
+  todoText?.classList.remove("remove");
+  todoInput?.classList.add("remove");
+
+  const todoId = todoItem.dataset.id;
+
+  if (!todoId) return;
+
+  const index = todos.findIndex((todo) => todo.id === +todoId);
+
+  const item = todos[index];
+  const updatedTodo = { ...item, todo: todoInput.value };
+  todos.splice(index, 1, updatedTodo);
+
 });
