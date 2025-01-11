@@ -2,6 +2,8 @@ const input_text = document.querySelector(".input-text") as HTMLInputElement;
 const btn_add = document.querySelector(".btn-add");
 const todo_list = document.querySelector(".todo-list");
 
+const tabs = document.querySelector(".tabs");
+
 interface Todo {
   text: string;
   id: number;
@@ -10,11 +12,10 @@ interface Todo {
 
 let todos: Todo[] = [];
 
-//
 const getLocallyStoredTodos = localStorage.getItem("todos");
 todos = getLocallyStoredTodos ? JSON.parse(getLocallyStoredTodos) : [];
 
-const renderTodo = function (todo: Todo) {
+const todoTemplate = function (todo: Todo) {
   const todo_item = `
         <li class="todo-item" data-id="${todo.id}">
         <input type="checkbox" class="todo-check" ${
@@ -50,26 +51,37 @@ const renderTodo = function (todo: Todo) {
   input_text.value = "";
 };
 
-const renderStoredTodos = function (todos: Todo[]) {
-  if (todos.length <= 0) return;
+const renderTodos = function (todos: Todo[], status: string = "") {
+  if (!todo_list) return;
 
-  todos.map((todo) => renderTodo(todo));
+  todo_list.innerHTML = "";
+
+  const filterTodos = todos.filter((todo) => {
+    if (status === "completed") return todo.completed;
+
+    if (status === "pending") return !todo.completed;
+    return true;
+  });
+
+  if (filterTodos.length > 0) {
+    filterTodos.map((todo) => todoTemplate(todo));
+  } else {
+    const emptyTemplate = `<p class="tab-status">${status} is empty</p>`;
+
+    todo_list?.insertAdjacentHTML("beforeend", emptyTemplate);
+  }
 };
 
-renderStoredTodos(todos);
+renderTodos(todos, "all");
 
 const addToLocalStorage = function (todos: Todo[]) {
   const addItems = JSON.stringify(todos);
-
-  console.log(todos);
 
   localStorage.setItem("todos", addItems);
 };
 
 const addToList = function (todo: Todo) {
   todos.push(todo);
-
-  //add to the localstorage
   addToLocalStorage(todos);
 };
 
@@ -90,7 +102,7 @@ btn_add?.addEventListener("click", function (e) {
   };
 
   //display the item on the screen
-  renderTodo(todoObj);
+  todoTemplate(todoObj);
 
   //add to the todos list
   addToList(todoObj);
@@ -202,4 +214,18 @@ todo_list?.addEventListener("click", function (e) {
   todos.splice(index, 1, updatedTodo);
 
   addToLocalStorage(todos);
+});
+
+tabs?.addEventListener("click", function (e) {
+  // console.log(e.target);
+  const target = e.target as HTMLElement;
+
+  const btn = target.closest("button");
+  const btn_class = btn?.className;
+  const btns = tabs.querySelectorAll("button");
+
+  btns?.forEach((btn) => btn.classList.remove("active"));
+  btn?.classList.add("active");
+
+  renderTodos(todos, btn_class);
 });

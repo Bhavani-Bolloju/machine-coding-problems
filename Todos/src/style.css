@@ -14,13 +14,48 @@ body {
   padding: 100px;
 }
 
+.todos-container {
+  width: 60%;
+}
+
+form {
+  margin-bottom: 30px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.352);
+}
+
+.tabs button {
+  background-color: transparent;
+  border: none;
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+}
+
+.tabs button:hover {
+  cursor: pointer;
+}
+
+.tabs button.active {
+  border-bottom: 1px solid;
+}
+
+.tab-status {
+  text-align: center;
+  padding-top: 20px;
+}
+
 li {
   list-style: none;
   display: flex;
   align-items: center;
   gap: 10px;
   position: relative;
-  /* width: 220px; */
   margin-top: 20px;
 }
 
