@@ -58,13 +58,13 @@ const addTodo = function (todo: Todo) {
 const getTodoListElements = function (e: Event) {
   const target = e.target as HTMLElement;
 
-  const todoCheck = target?.closest(".todo-check");
+  const todoCheck = target?.closest(".todo-check") as HTMLInputElement;
   const todoEl = target?.closest(".todo-item") as HTMLElement;
   const editBtn = target?.closest(".btn-edit") as HTMLElement;
   const saveBtn = target?.closest(".btn-save");
   const deleteBtn = target?.closest(".btn-delete");
   const todoInput = todoEl.querySelector(".todo-input") as HTMLInputElement;
-  const todoText = todoEl.querySelector(".todo-text");
+  const todoText = todoEl.querySelector(".todo-text") as HTMLElement;
   const todoId = todoEl?.dataset?.id;
 
   return {
@@ -165,8 +165,7 @@ todo_list?.addEventListener("click", function (e) {
 
 // .............editing the todo
 todo_list?.addEventListener("click", function (e) {
-  const { todoEl, editBtn, todoInput, todoText, deleteBtn } =
-    getTodoListElements(e);
+  const { todoEl, editBtn, todoInput, todoText } = getTodoListElements(e);
 
   if (!editBtn || !todoEl) return;
 
