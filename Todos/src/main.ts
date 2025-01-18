@@ -47,14 +47,42 @@ const todoTemplate = function (todo: Todo) {
           <button class="btn-save remove">save</button>
         </li>`;
   todo_list?.insertAdjacentHTML("beforeend", todo_item);
+};
+
+const addTodo = function (todo: Todo) {
+  todoTemplate(todo);
 
   input_text.value = "";
+};
+
+const getTodoListElements = function (e: Event) {
+  const target = e.target as HTMLElement;
+
+  const todoCheck = target?.closest(".todo-check");
+  const todoEl = target?.closest(".todo-item") as HTMLElement;
+  const editBtn = target?.closest(".btn-edit") as HTMLElement;
+  const saveBtn = target?.closest(".btn-save");
+  const deleteBtn = target?.closest(".btn-delete");
+  const todoInput = todoEl.querySelector(".todo-input") as HTMLInputElement;
+  const todoText = todoEl.querySelector(".todo-text");
+  const todoId = todoEl?.dataset?.id;
+
+  return {
+    todoEl,
+    editBtn,
+    saveBtn,
+    deleteBtn,
+    todoInput,
+    todoText,
+    todoCheck,
+    todoId
+  };
 };
 
 const renderTodos = function (todos: Todo[], status: string = "") {
   if (!todo_list) return;
 
-  todo_list.innerHTML = "";
+  todo_list.innerHTML = " ";
 
   const filterTodos = todos.filter((todo) => {
     if (status === "completed") return todo.completed;
@@ -100,111 +128,77 @@ btn_add?.addEventListener("click", function (e) {
     text,
     completed: false
   };
-
   //display the item on the screen
-  todoTemplate(todoObj);
+  addTodo(todoObj);
 
-  //add to the todos list
+  //add to the todos list and update locale storage
   addToList(todoObj);
 });
 
 //................deleting the todo
 todo_list?.addEventListener("click", function (e) {
-  const target = e.target as HTMLElement | null;
+  const { deleteBtn, todoEl, todoId } = getTodoListElements(e);
+  if (!deleteBtn || !todoEl || !todoId) return;
 
-  const btn = target?.closest(".btn-delete");
+  todos = todos.filter((todo) => todo.id !== +todoId);
 
-  const item = target?.closest(".todo-item") as HTMLObjectElement | null;
-
-  if (!btn || !item) return;
-
-  const itemId = item?.dataset?.id;
-
-  //remove item from the dom
-  const todo = btn.closest(".todo-item") as HTMLElement;
-  todo.classList.add("remove");
-
-  //remove item from the list
-  if (!itemId) return;
-  todos = todos.filter((todo) => todo.id !== +itemId);
+  renderTodos(todos);
   addToLocalStorage(todos);
 });
 
-//............marking as complete/incomplete
+// ............marking as complete/incomplete
 todo_list?.addEventListener("click", function (e) {
-  const target = e.target as HTMLElement | null;
+  const { todoCheck, todoEl, todoId } = getTodoListElements(e);
 
-  const btn = target?.closest(".todo-check") as HTMLInputElement;
-  const todoEl = target?.closest(".todo-item") as HTMLElement;
+  if (!todoCheck || !todoEl || !todoId) return;
 
-  if (!btn || !todoEl) return;
-
-  const isCompleted = btn.checked;
-
-  const todoId = todoEl.dataset.id;
-
-  if (!todoId) return;
+  const isCompleted = todoCheck.checked;
 
   const index = todos.findIndex((todo) => todo.id === +todoId);
-
   const todo = todos[index];
-
   const updatedTodo = { ...todo, completed: isCompleted };
-
   todos.splice(index, 1, updatedTodo);
 
+  renderTodos(todos);
   addToLocalStorage(todos);
 });
 
-//.............editing the todo
+// .............editing the todo
 todo_list?.addEventListener("click", function (e) {
-  const target = e.target as HTMLElement | null;
+  const { todoEl, editBtn, todoInput, todoText, deleteBtn } =
+    getTodoListElements(e);
 
-  if (!target) return;
-
-  const todoEl = target?.closest(".todo-item") as HTMLElement;
-  const editBtn = target?.closest(".btn-edit") as HTMLElement;
+  if (!editBtn || !todoEl) return;
 
   const saveBtn = todoEl.querySelector(".btn-save");
-  const todoInput = todoEl.querySelector(".todo-input") as HTMLInputElement;
 
-  const todoText = todoEl.querySelector(".todo-text");
+  if (!saveBtn || !todoInput || !todoText) return;
 
-  if (!editBtn) return;
-
-  if (!todoEl || !saveBtn || !todoInput || !todoText) return;
-
-  saveBtn?.classList.remove("remove");
-  editBtn?.classList.add("remove");
-  todoText?.classList.add("remove");
-  todoInput?.classList.remove("remove");
+  saveBtn?.classList.toggle("remove");
+  editBtn?.classList.toggle("remove");
+  todoText?.classList.toggle("remove");
+  todoInput?.classList.toggle("remove");
 
   todoInput.value = todoText.textContent || "";
 });
 
-//............updating the edited todo
+// ............updating the edited todo
 todo_list?.addEventListener("click", function (e) {
-  const target = e.target as HTMLElement | null;
+  const { todoEl, todoInput, todoText, saveBtn, todoId } =
+    getTodoListElements(e);
 
-  const saveBtn = target?.closest(".btn-save") as HTMLElement;
-
-  if (!saveBtn) return;
-
-  const todoItem = target?.closest(".todo-item") as HTMLElement;
-  const todoInput = todoItem.querySelector(".todo-input") as HTMLInputElement;
-  const todoText = todoItem.querySelector(".todo-text") as HTMLElement;
-  const editBtn = todoItem.querySelector(".btn-edit") as HTMLElement;
+  if (!saveBtn || !todoEl || !todoInput || !todoId || !todoText) return;
 
   todoText.textContent = todoInput.value;
 
-  saveBtn?.classList.add("remove");
-  editBtn?.classList.remove("remove");
-  todoText?.classList.remove("remove");
-  todoInput?.classList.add("remove");
+  const editBtn = todoEl.querySelector(".btn-edit");
 
-  const todoId = todoItem.dataset.id;
+  if (!editBtn) return;
 
-  if (!todoId) return;
+  saveBtn?.classList.toggle("remove");
+  editBtn?.classList.toggle("remove");
+  todoText?.classList.toggle("remove");
+  todoInput?.classList.toggle("remove");
 
   const index = todos.findIndex((todo) => todo.id === +todoId);
 
@@ -216,16 +210,19 @@ todo_list?.addEventListener("click", function (e) {
   addToLocalStorage(todos);
 });
 
+// sorting todos
 tabs?.addEventListener("click", function (e) {
   // console.log(e.target);
   const target = e.target as HTMLElement;
 
   const btn = target.closest("button");
-  const btn_class = btn?.className;
+
+  if (!btn) return;
+
+  const btn_class = btn.className;
   const btns = tabs.querySelectorAll("button");
 
   btns?.forEach((btn) => btn.classList.remove("active"));
   btn?.classList.add("active");
-
   renderTodos(todos, btn_class);
 });
