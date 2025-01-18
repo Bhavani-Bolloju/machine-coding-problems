@@ -12,5 +12,115 @@ html {
 
 body {
   padding: 100px;
+  font-family: "Lato", serif;
 }
 
+.todos-container {
+  width: 60%;
+}
+
+form {
+  margin-bottom: 30px;
+  display: flex;
+  gap: 5px;
+}
+
+form input {
+  padding: 2px 5px;
+  height: 30px;
+  outline: none;
+  font-size: 16px;
+}
+form button {
+  padding: 0px 20px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.352);
+}
+
+.tabs button {
+  background-color: transparent;
+  border: none;
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+}
+
+.tabs button:hover {
+  cursor: pointer;
+}
+
+.tabs button.active {
+  border-bottom: 1px solid;
+}
+
+.tab-status {
+  text-align: center;
+  padding-top: 20px;
+}
+
+li {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  margin-top: 20px;
+}
+
+li div {
+  /* width: fit-content; */
+  border: 1px solid;
+  padding: 5px 15px;
+  margin: 10px 0;
+}
+
+.btn-delete,
+.btn-edit {
+  width: 25px;
+  height: 25px;
+}
+
+.btn-delete svg,
+.btn-edit svg {
+  width: 100%;
+  height: auto;
+}
+
+.todo-check {
+  height: 25px;
+  width: 25px;
+}
+
+.todo-content {
+  min-width: fit-content;
+  width: 300px;
+}
+
+.todo-content span {
+  width: 100%;
+}
+
+.todo-content input {
+  width: 100%;
+  height: 100%;
+}
+
+.remove {
+  display: none;
+}
+
+.btn-delete:hover,
+.btn-edit:hover {
+  cursor: pointer;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  display: none;
+}
