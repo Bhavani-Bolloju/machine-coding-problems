@@ -1,4 +1,5 @@
 "use strict";
+
 const username = document.querySelector(".username");
 const debounceValue = document.querySelector(".debounce-value");
 const throttleValue = document.querySelector(".throttle-value");
@@ -14,10 +15,10 @@ function debounce() {
   };
 }
 
-const timer = debounce();
+const debounceInputUpdate = debounce();
 
 //-----------Throttling---------------
-const throttling = function () {
+const throttle = function () {
   let isActive = true;
 
   let outputText;
@@ -36,13 +37,14 @@ const throttling = function () {
     }, 1000);
   };
 };
-const interval = throttling();
+
+const throttleInputUpdate = throttle();
 
 //........................
 username.addEventListener("input", function (e) {
   const value = e.target.value;
+  debounceInputUpdate(value);
+  throttleInputUpdate(value);
   normalValue.textContent = value;
-  timer(value);
-  interval(value);
 });
 
