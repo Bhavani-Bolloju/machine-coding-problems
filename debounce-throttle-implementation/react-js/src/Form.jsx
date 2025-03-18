@@ -70,7 +70,7 @@ function Form() {
       <input
         onChange={inputHandler}
         type="search"
-        placeholder="enter counter name"
+        placeholder="Enter country name"
         list="countries"
       />
 
