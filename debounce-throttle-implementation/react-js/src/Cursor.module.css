@@ -1,0 +1,27 @@
+.custom-cursor {
+  position: fixed;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: rgba(170, 6, 6, 0.689);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  /* mix-blend-mode: difference; */
+  z-index: 10000;
+  transition: top 0.15s linear, left 0.15s linear;
+}
+
+.custom-cursor--dot {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  /* border: 3px solid black; */
+  background-color: rgba(232, 15, 15, 0.7);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  /* mix-blend-mode: difference; */
+  z-index: 1000;
+  transition: all 0.3s linear;
+}
+
