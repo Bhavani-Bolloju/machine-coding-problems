@@ -1,8 +1,8 @@
-## Debounce and Throttle
+# Debounce and Throttle
 
 Debounce and Throttle are two different optimization techniques used to improve performance by controlling how often a function executes.
 
-### Debounce
+## Debounce
 - It is technique that is used to limit the number of times a function is executed with a given time.
 - It is useful when a function is triggered frequently by events like keypress, scroll etc.
 - Instead of executing the function immediately on every event trigger, debounce waits for a specified delay before executing the function
@@ -13,7 +13,7 @@ Debounce and Throttle are two different optimization techniques used to improve 
 
   ----
 
-  ### Throttle
+  ## Throttle
   Throttle may seem similar to debounce, but the key difference lies in how they handle event execution. 
   While debounce waits for inactivity, throttle ensures that a function runs at most once in a fixed time interval, no matter how many times the event is triggered.
 
