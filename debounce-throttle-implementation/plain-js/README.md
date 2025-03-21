@@ -77,29 +77,69 @@ username.addEventListener("input", function (e) {
 
 
 ----
-## Throttle
+# Throttle
 
-Instead of waiting for inactivity from the user before allowing function execution, throttle ensures a function is executed at certain fixed interval when multiple events are triggered continuously.
+Unlike debounce, which waits for inactivity before executing a function, throttle ensures function executes at a fixed interval when multiple events are triggered continuously.
 
-suppose if the event is triggered continuously we have to excute the fuction for every 500ms at fixed interval instead of executing it every event trigger
+**For example** if the event is triggered multiple times(mouse movement, window resize) instead of executing function on every event trigger, throttle allows execution only once every 500ms(for example). 
 
 ### First Attempt - Basic delay
 
-**Goal** - Is to delay the function execution for every event tigger
+**Goal** - delay function execution for every event trigger
 
 ```
 const throttling = function(){
    return (text)=> {
      setTimeout(()=>{
       console.log(text)
-     },2000);
+     },500);
    } 
 }
 ```
 
+**❌ Problem** - This does delay the function but still executes the function for every event trigger but just with a delay
+
+✔️ What i should i need to do instead:
+
+- The function should executer every 500ms, no matter how many times the event is triggered.
+- Any event triggered during the active `timer` should be ignored.
+- And need a way to track whether the `timer` is active or not -- use `closures` just like we did with `debounce` to preserve the `state` between multiple function calls.
 
 
+### Final attempt - using closures to preserve active state 
 
+```
+const throttle = function () {
+  let isActive = true;
+  let outputText;
+  return (text) => {
+    outputText = text;
+    if (!isActive) {
+      return;
+    }
+    isActive = false;
+    throttleValue.textContent = text;
+    setTimeout(() => {
+      isActive = true;
+      throttleValue.textContent = outputText;
+    }, 1000);
+  };
+};
+
+const throttleInputUpdate = throttle();
+```
+
+**✔️ Solution:**
+
+- Initially `isActive` is set to `true`, meaning function/code can run and register the `timer`.
+- **When the event is triggered:**
+   - If `isActive` is `false`, we ignore the function call(with `return`);
+   - If `isActive` is `true`, we run the function, then immediately set `isActive` to `false` to block futher executions until the timer completes.
+- A setTimeout starts(500ms) and when it completes:
+  - isActive is set back to true, allowing next execution.
+- The `outputText` variable is to ensure that the latest text value is retained and correctly updated when the function executes after the delay.
+
+ 
 
 
 
