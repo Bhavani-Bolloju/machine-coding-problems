@@ -9,7 +9,9 @@ Debounce and Throttle are two different optimization techniques used to improve 
 - Each time the event is triggered within the delay period, the timer resets, ensuring that the function runs only once after the user stops triggering the event.
 
 **Example** - Imagine a search bar where users type to search for country names, If we trigger an API for every keystroke or character user enters, it would be so inefficient and could cause excessive network issues. 
-  Instead with debounce we would wait for the user to stop typing for a certain period(1 min) before making the API call.
+  Instead with debounce we would wait for the user to stop typing for a certain period(say 1 min) before making the API call.
+  
+**Example implementation in React** - [Debounce search (Github)](https://github.com/Bhavani-Bolloju/machine-coding-problems/blob/master/debounce-throttle-implementation/react-js/src/Form.jsx)
 
   ----
 
@@ -25,7 +27,10 @@ Debounce and Throttle are two different optimization techniques used to improve 
 **Example** - Imagine we implement a custom cursor that follows the user's mouse movement, each time the mouse moves, multiple events are fired continuously.
 
 - without throttling evey time movement would trigger a state update, leading to performance issue
-- with throttle we ensure state updates at a fixed interval(like every 100ms) ignoring every other even in between. This way, we smoothly update the cursor without unnecessary updates. 
+- with throttle we ensure state updates at a fixed interval(like every 100ms) ignoring every other even in between. This way, we smoothly update the cursor without frequent state updates.
+
+**Example implementation in React** - [throttle custom cursor (Github)](https://github.com/Bhavani-Bolloju/machine-coding-problems/blob/master/debounce-throttle-implementation/react-js/src/Cursor.jsx)
+
 
   
 
