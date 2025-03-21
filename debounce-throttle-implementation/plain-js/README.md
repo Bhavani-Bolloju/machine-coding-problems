@@ -1,4 +1,4 @@
-# Implementation of Debounce and Throttle in Vanilla JavaScript
+# Implementation of Debounce and Throttle in vanilla JavaScript
 
 ## Debounce
 
