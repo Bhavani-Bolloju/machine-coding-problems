@@ -68,7 +68,6 @@ const debounceInputUpdate = debounce();
 username.addEventListener("input", function (e) {
   debounceInputUpdate(value);
 });
-
 ```
 **✔️ Solution:**
 
@@ -77,9 +76,42 @@ username.addEventListener("input", function (e) {
 - This ensurs only the latest event(after inactivity) triggers the function execution.
 
 
-
 ----
 ## Throttle
+
+Instead of waiting for inactivity from the user before allowing function execution, throttle ensures a function is executed at certain fixed interval when multiple events are triggered continuously.
+
+suppose if the event is triggered continuously we have to excute the fuction for every 500ms at fixed interval instead of executing it every event trigger
+
+### First Attempt - Basic delay
+
+**Goal** - Is to delay the function execution for every event tigger
+
+```
+const throttling = function(){
+   return (text)=> {
+     setTimeout(()=>{
+      console.log(text)
+     },2000);
+   } 
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
