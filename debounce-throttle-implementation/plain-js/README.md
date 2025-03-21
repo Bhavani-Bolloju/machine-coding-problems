@@ -17,7 +17,7 @@ username.addEventListener("input", function(e){
   debounce(e.target.value);
 })
 ```
-❌ Problem - This simply delays function execution by 1 second but does not prevent multiple timers from being created. 
+❌ Problem - This simply delays function execution by 1sec but does not prevent multiple timers from being created. 
 As a result, the function still executes for every event trigger just with a delay.
 
 ### Second Attempt - Clearing previous timer
@@ -43,14 +43,14 @@ The timer must be preserved across function calls to ensure only the latest exec
 
 - Each time the function is called, a new timer variable is created inside
 - JavaScript will still execute the setTimeout after the delay, even if a newer event has already triggered another timer.
-- This results in multiple pending timers, causing unexpected or unnecessary function executions.
+- This results in multiple pending timers, causing frequent function executions.
 - But if we don’t store the timer in a persistent variable (outside the function scope), we cannot access the previous timer to clear it.
 - Clearing the timer ensures that only the latest function call gets executed after the delay.
 
 
 ### Final Attempt - Using Closures to preserve timer
 
-**Goal** - Preserve the  setTimeout`(the timer variable) between function calls so that only one active timer exists when the user stops triggering the event.
+**Goal** - Preserve the `setTimeout`(the timer variable) between function calls so that only one active timer exists when the user stops triggering the event.
 
 ```
 function debounce(){
